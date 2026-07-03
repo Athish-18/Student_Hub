@@ -7,8 +7,10 @@ const studentController = require("../controllers/student.controller");
 // GET /students/check
 studentsRouter.get("/", studentController.getStudents);
 
-studentsRouter.get('/:id',studentController.getStudentById);
+studentsRouter.get("/:id", studentController.getStudentById);
 
-studentsRouter.post('/',studentController.addStudent);
+studentsRouter.post("/", studentController.addStudent);
+
+studentsRouter.put("/:id", studentController.updateStudent);
 
 module.exports = studentsRouter;

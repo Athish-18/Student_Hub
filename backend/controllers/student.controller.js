@@ -34,7 +34,7 @@ const getStudentById = (req, res) => {
 };
 
 const addStudent = (req, res) => {
-  const { name, branch } = req.body || {};
+  const { name, branch } = req.body;
   if (!name || !branch) {
     return res.status(400).json({
       message: "Name and branch are required fields",
@@ -50,8 +50,33 @@ const addStudent = (req, res) => {
     .json({ message: "Student added successfully", student: newStudent });
 };
 
+const updateStudent = (req, res) => {
+  const studentId = parseInt(req.params.id, 10);
+  const student = students.find((s) => s.id === studentId);
+
+  if (!student) {
+    return res.status(404).json({
+      message: `Student with id ${studentId} not found`,
+    });
+  }
+
+  const { name, branch } = req.body;
+  if (name !== undefined) {
+    student.name = name;
+  }
+  if (branch !== undefined) {
+    student.branch = branch;
+  }
+
+  return res.json({
+    message: `PUT request to /students/${studentId} successful`,
+    student,
+  });
+};
+
 module.exports = {
   getStudents,
   getStudentById,
   addStudent,
+  updateStudent,
 };

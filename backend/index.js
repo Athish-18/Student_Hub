@@ -4,6 +4,8 @@ const studentsRouter = require("./routes/student.route");
 
 const app = express();
 
+app.use(express.json()); // Middleware to parse JSON request bodies into JavaScript objects
+
 // Middleware
 app.use(express.json());
 
