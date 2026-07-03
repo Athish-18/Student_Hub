@@ -74,9 +74,24 @@ const updateStudent = (req, res) => {
   });
 };
 
+const deleteStudent = (req, res) => {
+  const studentId = parseInt(req.params.id, 10);
+  const index = students.findIndex((s) => s.id === studentId);
+
+  if (index === -1) {
+    return res.status(404).json({
+      message: `Student with id ${studentId} not found`,
+    });
+  }
+
+  students.splice(index, 1);
+  return res.status(204).send();
+};
+
 module.exports = {
   getStudents,
   getStudentById,
   addStudent,
   updateStudent,
+  deleteStudent,
 };

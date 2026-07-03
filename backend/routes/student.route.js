@@ -13,4 +13,6 @@ studentsRouter.post("/", studentController.addStudent);
 
 studentsRouter.put("/:id", studentController.updateStudent);
 
+studentsRouter.delete("/:id", studentController.deleteStudent);
+
 module.exports = studentsRouter;
