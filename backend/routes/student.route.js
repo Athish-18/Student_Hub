@@ -9,4 +9,6 @@ studentsRouter.get("/", studentController.getStudents);
 
 studentsRouter.get('/:id',studentController.getStudentById);
 
+studentsRouter.post('/',studentController.addStudent);
+
 module.exports = studentsRouter;
