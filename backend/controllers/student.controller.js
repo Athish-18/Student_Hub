@@ -1,3 +1,5 @@
+const Student = require("../models/student.model");
+
 const students = [
   {
     id: 1,
@@ -11,26 +13,43 @@ const students = [
   },
 ];
 
-const getStudents = (req, res) => {
-  res.json({
-    message: "GET request to /students/check successful",
-    students: students,
-  });
-};
-
-const getStudentById = (req, res) => {
-  const studentId = parseInt(req.params.id);
-  const student = students.find((s) => s.id === studentId);
-
-  if (!student) {
-    return res.status(404).json({
-      message: `Student with id ${studentId} not found`,
+const getStudents = async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.json({
+      message: "GET request to /students/check successful",
+      students,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching students",
+      error: error.message,
     });
   }
-  res.json({
-    message: `GET request to /students/${studentId} successful`,
-    student: student,
-  });
+};
+
+const getStudentById = async (req, res) => {
+  const studentId = req.params.id;
+
+  try {
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({
+        message: `Student with id ${studentId} not found`,
+      });
+    }
+
+    res.json({
+      message: `GET request to /students/${studentId} successful`,
+      student,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching student",
+      error: error.message,
+    });
+  }
 };
 
 const addStudent = (req, res) => {
