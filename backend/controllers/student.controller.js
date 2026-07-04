@@ -52,7 +52,7 @@ const getStudentById = async (req, res) => {
   }
 };
 
-const addStudent = (req, res) => {
+const addStudent = async (req, res) => {
   const { name, branch } = req.body;
   if (!name || !branch) {
     return res.status(400).json({
@@ -60,51 +60,69 @@ const addStudent = (req, res) => {
     });
   }
 
-  const id = students.length + 1;
-  const newStudent = { id, name, branch };
-  students.push(newStudent);
+  try {
+    const student = await Student.create({ name, branch });
 
-  return res
-    .status(201)
-    .json({ message: "Student added successfully", student: newStudent });
-};
-
-const updateStudent = (req, res) => {
-  const studentId = parseInt(req.params.id, 10);
-  const student = students.find((s) => s.id === studentId);
-
-  if (!student) {
-    return res.status(404).json({
-      message: `Student with id ${studentId} not found`,
+    return res.status(201).json({
+      message: "Student added successfully",
+      student,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error creating student",
+      error: error.message,
     });
   }
+};
 
+const updateStudent = async (req, res) => {
+  const studentId = req.params.id;
   const { name, branch } = req.body;
-  if (name !== undefined) {
-    student.name = name;
-  }
-  if (branch !== undefined) {
-    student.branch = branch;
-  }
 
-  return res.json({
-    message: `PUT request to /students/${studentId} successful`,
-    student,
-  });
-};
+  try {
+    const updatedStudent = await Student.findByIdAndUpdate(
+      studentId,
+      { name, branch },
+      { new: true },
+    );
 
-const deleteStudent = (req, res) => {
-  const studentId = parseInt(req.params.id, 10);
-  const index = students.findIndex((s) => s.id === studentId);
+    if (!updatedStudent) {
+      return res.status(404).json({
+        message: `Student with id ${studentId} not found`,
+      });
+    }
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: `Student with id ${studentId} not found`,
+    return res.json({
+      message: `PUT request to /students/${studentId} successful`,
+      student: updatedStudent,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating student",
+      error: error.message,
     });
   }
+};
 
-  students.splice(index, 1);
-  return res.status(204).send();
+const deleteStudent = async (req, res) => {
+  const studentId = req.params.id;
+
+  try {
+    const deletedStudent = await Student.findByIdAndDelete(studentId);
+
+    if (!deletedStudent) {
+      return res.status(404).json({
+        message: `Student with id ${studentId} not found`,
+      });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting student",
+      error: error.message,
+    });
+  }
 };
 
 module.exports = {
