@@ -13,7 +13,7 @@ const students = [
   },
 ];
 
-const getStudents = async (req, res) => {
+const getStudents = async (req, res, next) => {
   try {
     const students = await Student.find();
     res.json({
@@ -21,14 +21,11 @@ const getStudents = async (req, res) => {
       students,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching students",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-const getStudentById = async (req, res) => {
+const getStudentById = async (req, res, next) => {
   const studentId = req.params.id;
 
   try {
@@ -45,14 +42,11 @@ const getStudentById = async (req, res) => {
       student,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching student",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-const addStudent = async (req, res) => {
+const addStudent = async (req, res, next) => {
   const { name, branch } = req.body;
   if (!name || !branch) {
     return res.status(400).json({
@@ -68,14 +62,11 @@ const addStudent = async (req, res) => {
       student,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error creating student",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-const updateStudent = async (req, res) => {
+const updateStudent = async (req, res, next) => {
   const studentId = req.params.id;
   const { name, branch } = req.body;
 
@@ -97,14 +88,11 @@ const updateStudent = async (req, res) => {
       student: updatedStudent,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error updating student",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
-const deleteStudent = async (req, res) => {
+const deleteStudent = async (req, res, next) => {
   const studentId = req.params.id;
 
   try {
@@ -118,10 +106,7 @@ const deleteStudent = async (req, res) => {
 
     return res.status(204).send();
   } catch (error) {
-    res.status(500).json({
-      message: "Error deleting student",
-      error: error.message,
-    });
+    next(error);
   }
 };
 
